@@ -1,4 +1,4 @@
-## 🎉 Birthday Greeting Webpage 
+## 🎉 Joey Kartawiharja's Birthday Greeting Webpage 
 
 [Demo](https://fatur-chan.github.io/happybirthdayjoey/)
 
