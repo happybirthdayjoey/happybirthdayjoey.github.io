@@ -1,25 +1,61 @@
 // trigger to play music in the background with sweetalert
 window.addEventListener('load', () => {
     Swal.fire({
-        title: 'Do you want to play music in the background?',
+        title: 'You must be curious what is inside!',
         icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.querySelector('.song').play();
-            animationTimeline();
-        } else {
-            animationTimeline();
+        
+        // --- PENTING: Jangan tampilkan tombol bawaan SweetAlert ---
+        showConfirmButton: false, // Sembunyikan tombol "OK" bawaan
+        showCancelButton: false, // Sembunyikan tombol "Cancel" bawaan
+        showCloseButton: false,  // Sembunyikan tombol 'x' untuk menutup
+        allowOutsideClick: false, // Tidak bisa ditutup dengan klik di luar
+        allowEscapeKey: false,    // Tidak bisa ditutup dengan tombol ESC
+        allowEnterKey: false,     // Menekan Enter tidak akan menutup pop-up
+
+        // --- Gunakan konten HTML kustom untuk tombol "Yes" dan "No" ---
+        html: `
+            <div style="margin-top: 20px;">
+                <button id="customYesButton" class="swal2-confirm swal2-styled" style="background-color: #3085d6; margin-right: 10px;">Yes</button>
+                <button id="customNoButton" class="swal2-cancel swal2-styled" style="background-color: #d33;">No</button>
+            </div>
+        `,
+        
+        // --- `didOpen` akan dijalankan setelah pop-up sepenuhnya muncul ---
+        didOpen: () => {
+            const customYesButton = document.getElementById('customYesButton');
+            const customNoButton = document.getElementById('customNoButton');
+
+            if (customYesButton) {
+                customYesButton.addEventListener('click', () => {
+                    document.querySelector('.song').play(); // Putar musik
+                    animationTimeline(); // Mulai animasi
+                    Swal.close(); // Tutup pop-up SweetAlert
+                });
+            }
+
+            if (customNoButton) {
+                customNoButton.addEventListener('click', () => {
+                    // Ketika tombol "No" diklik:
+                    // 1. Pop-up TIDAK akan menutup (karena Swal.close() tidak dipanggil)
+                    // 2. Musik TIDAK akan diputar
+                    // 3. Animasi TIDAK akan dimulai
+                    
+                    // Anda bisa memberikan feedback ke pengguna jika mau:
+                    Swal.showValidationMessage('JOEY KOK GA KEPO SIH!1!1!1!1'); 
+                    // Penting: Swal.showValidationMessage hanya akan muncul jika SweetAlert memiliki input.
+                    // Untuk kasus pop-up tanpa input, ini mungkin tidak terlihat jelas.
+                    // Alternatif: ubah teks di pop-up secara langsung, atau berikan alert JS biasa.
+                    // Contoh mengubah teks:
+                    // document.querySelector('.swal2-title').innerText = 'Kamu harus klik "Yes"!';
+                });
+            } else {
+                 console.error("Custom 'No' button not found!");
+            }
         }
     });
 });
 
-
-// animation timeline
+// animation timeline (kode ini diasumsikan tetap sama seperti yang Anda berikan)
 const animationTimeline = () => {
     // split chars that needs to be animated individually
     const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
@@ -266,7 +302,9 @@ const animationTimeline = () => {
 
     // Restart Animation on click
     const replyBtn = document.getElementById("replay");
-    replyBtn.addEventListener("click", () => {
-        tl.restart();
-    });
+    if (replyBtn) { // Pastikan tombol replay ada sebelum menambahkan event listener
+        replyBtn.addEventListener("click", () => {
+            tl.restart();
+        });
+    }
 }
